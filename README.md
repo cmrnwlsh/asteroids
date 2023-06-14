@@ -1,3 +1,3 @@
 # asteroids
 
-wasd to move c to shoot
+Arrow keys to move, Control to shoot
