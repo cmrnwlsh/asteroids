@@ -35,7 +35,6 @@
       this.velocity = {x: 0, y: 0}
       this.rotation = 270
       this.cooldown = 10
-
       this.draw()
     }
 
@@ -155,6 +154,7 @@
       const side = ['top', 'bottom', 'left', 'right'][Math.floor(Math.random() * 4)]
       this.rotation = 270
       this.radius = 10
+      this.direction = Math.random() > 0.5
       this._vertices = [
         {x: 0, y: 5},
         {x: 3, y: 4},
@@ -225,7 +225,7 @@
 
     rotate(direction) {
       const angle = (direction ? 1 : -1) * 3.5
-      this.rotation += angle
+      this.rotation += angle * this.direction ? 1 : -1
     }
 
     draw() {
