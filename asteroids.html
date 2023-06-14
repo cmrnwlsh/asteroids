@@ -151,7 +151,6 @@
 
   class Asteroid {
     constructor() {
-      const side = ['top', 'bottom', 'left', 'right'][Math.floor(Math.random() * 4)]
       this.rotation = 270
       this.radius = 10
       this.direction = Math.random() > 0.5
@@ -175,7 +174,7 @@
         return vertex
       })
 
-      switch (side) {
+      switch (['top', 'bottom', 'left', 'right'][Math.floor(Math.random() * 4)]) {
         case 'top':
           this.x = Math.random() * canvas.width
           this.y = 0
