@@ -295,15 +295,19 @@
     if (Object.keys(keyState).includes(keyEvent.key))
       keyState[keyEvent.key].active = false
   })
+
   const update = _ => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+
     player.update()
     projectiles.forEach(projectile => projectile.update())
     asteroids.forEach(asteroid => asteroid.update())
+
     if (asteroidInterval-- < 0) {
       asteroids.push(new Asteroid())
       asteroidInterval = 50
     }
+
     Object.values(keyState).forEach(state => {
       if (state.active)
         state.action()
