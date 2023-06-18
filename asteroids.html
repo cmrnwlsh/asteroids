@@ -34,7 +34,8 @@
       this.y = canvas.height / 2
       this.velocity = {x: 0, y: 0}
       this.rotation = 270
-      this.cooldown = 10
+      this.hitRadius = 10
+      this.cooldown = 15
       this.draw()
     }
 
@@ -152,7 +153,6 @@
   class Asteroid {
     constructor() {
       this.rotation = 270
-      this.radius = 10
       this.direction = Math.random() > 0.5
       this._vertices = [
         {x: 0, y: 5},
@@ -236,12 +236,36 @@
       ctx.stroke()
     }
 
+    detectCollision() {
+      const projectileHit = projectiles.find(projectile => {
+        const distance = Math.sqrt(Math.pow(projectile.x - this.x, 2) + Math.pow(projectile.y - this.y, 2))
+        if (distance < 20)
+          return true
+      })
+      const playerHit = (() => {
+        const distance = Math.sqrt(Math.pow(player.x - this.x, 2) + Math.pow(player.y - this.y, 2))
+        if (distance < 27.5)
+          return true
+      })()
+
+      if (projectileHit) {
+        asteroids.splice(asteroids.indexOf(this), 1)
+        projectiles.splice(projectiles.indexOf(projectileHit), 1)
+        score += 1
+      }
+      if (playerHit) {
+        asteroids.splice(asteroids.indexOf(this), 1)
+        lives -= 1
+      }
+    }
+
     update() {
       if (this.x > canvas.width || this.x < 0 || this.y > canvas.height || this.y < 0)
         asteroids.splice(asteroids.indexOf(this), 1)
       this.x += this.velocity.x
       this.y += this.velocity.y
       this.rotate()
+      this.detectCollision()
 
       this.draw()
     }
@@ -250,7 +274,9 @@
   const player = new Player()
   const projectiles = []
   const asteroids = []
-  let asteroidInterval = 100
+  let score = 0
+  let lives = 3
+  let asteroidInterval = 50
 
   const keyState = {
     ArrowUp: {active: false, action: _ => player.accelerate()},
@@ -276,12 +302,19 @@
     asteroids.forEach(asteroid => asteroid.update())
     if (asteroidInterval-- < 0) {
       asteroids.push(new Asteroid())
-      asteroidInterval = 100
+      asteroidInterval = 50
     }
     Object.values(keyState).forEach(state => {
       if (state.active)
         state.action()
     })
+
+    ctx.font = '18px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillStyle = 'white'
+    ctx.fillText(`Lives: ${lives}`, 45, 30)
+    ctx.fillText(`Score: ${score}`, canvas.width / 2, 30)
+
     window.requestAnimationFrame(update)
   }
 
